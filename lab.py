@@ -1,169 +1,212 @@
+import sys
+import json
+import yaml
+import xmltodict
+import subprocess
 
-#  TASK 0
-
-#!/usr/bin/env python
-
-# Lista komponentow
 required_packages = [
-    "sys",
+    "xmltodict", 
+]
+
+for package in required_packages:
+    try:
+        subprocess.check_call(['pip', 'install', package], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except subprocess.CalledProcessError:
+        input(f'Error while installing package: {package}.')
+        exit()
+    print('All packages installed successfully.')
+
+allowed_extensions = [
     "json",
-    "os",
-    "subprocess",
-    "importlib",
-    "pyyaml",
+    "yaml",
+    "yml",
     "xml",
 ]
 
-if __name__ == '__main__':
-    import importlib
-    import subprocess
-
-    
-    for package in required_packages:
-        try:
-            importlib.import_module(package)
-        except ImportError:
-            try:
-                subprocess.check_call(['pip', 'install', package])
-            except subprocess.CalledProcessError:
-                print(f'\nError while instaling package: {package}.')
-                exit()
-    print('\nAll packages are installed.')
-
-
-#  TASK 1
-import sys
-
-arguments = sys.argv[1:]
-if arguments:
-    print("\nPassed arguments:", arguments)
-else:
-    print("\nNo arguments were passed.\n")
-
-
-#Task 2
-import json
-import os
-
-filename = "json_file.json"
-data = {}
-
-try:
-    with open(filename, "r") as file:
-        data = json.load(file)
-        data = json.dumps(data, indent=4)
-        print(f"[{filename}]: \n {data}")
-except Exception:
-    print(f"[!!!] Error while importing  {filename}.\nProbably file does not exist or is not in json syntax [!!!]")
-    exit()
-
-
-
-#Task 3
-data = json.loads(data)
-
-filename = "json_output.json"
-
-try:
-    with open(filename, "w") as file:
-        json.dump(data, file, indent=4)
-        print(f"\n[{filename}] created.")
-except Exception:
-    print(f"[!!!] Error while creating {filename} [!!!]")
-    exit()
-
-
-#Task 4
-
-import yaml
-
-
-filename = "yaml_file.yml"
-data = {}
-
-try:
-    with open(filename, "r") as file:
-        try:
-            data = yaml.safe_load(file)
-            print(f"[{filename}]:")
-            print(yaml.dump(data, indent=4))
-        except yaml.YAMLError:
-            print(f"[!!!] Error while importing {filename}.")
-            print("Probably file does not exist or is not in YAML syntax [!!!]")
+def checkArgs():
+    arguments = sys.argv[1:]
+    if arguments:
+        if len(arguments) != 2:
+            input("\t\t[!!!] Wrong arguments. Enter to exit")
             exit()
-except FileNotFoundError:
-    print(f"[!!!] Error: {filename} does not exist [!!!]")
-    exit()
+        
+        elif arguments[0] == arguments[1]:
+            input("\t\t[!!!] Wrong arguments. Enter to exit")
+            exit()
 
-# Task 5
+        else:
+            inputFile = arguments[0].split('.')
+            output = arguments[1].split('.')
 
-filename = "yaml_output.yml"
+            input_ext = inputFile[-1].lower()
+            output_ext = output[-1].lower()
 
-try:
-    with open(filename, "w") as file:
-        yaml.dump(data, file, default_flow_style=False, indent=4)
-        print(f"\n[{filename}] created.")
-except Exception:
-    print(f"[!!!] Error while creating {filename} [!!!]")
-    exit()
+            input_filename = inputFile[0]
+            output_filname = output[0]
 
-
-
-# Task 6
-import xml.etree.ElementTree as ET
-
-filename = "xml_file.xml"
-data = {}
-
-try:
-    tree = ET.parse(filename)
-    root = tree.getroot()
-
-    for person in root.findall("person"):
-        person_data = {}
-        for element in person:
-            person_data[element.tag] = element.text
-        data[f"person{len(data)+1}"] = person_data
-
-    print(f"[{filename}]:")
-    for key, person_data in data.items():
-        print(key)
-        for element, value in person_data.items():
-            print(f"    {element}: {value}")
-except FileNotFoundError:
-    print(f"[!!!] Error: {filename} does not exist [!!!]")
-    exit()
-except ET.ParseError:
-    print(f"[!!!] Error while importing {filename}.")
-    print("Probably file does not exist or is not in valid XML syntax [!!!]")
-    exit()
-
-# Task 7
-import xml.dom.minidom as minidom
-
-filename = "xml_output.xml"
-
-try:
-    root = ET.Element("root")
-
-    for person_key, person_data in data.items():
-        person = ET.SubElement(root, "person")
-        for element, value in person_data.items():
-            element_tag = ET.SubElement(person, element)
-            element_tag.text = value
-
-    tree = ET.ElementTree(root)
+            if (output_ext in allowed_extensions) and (input_ext in allowed_extensions):
+                print("\tExpected result:\n\t", input_ext, " --> ", output_ext)
+                return input_filename + "." + input_ext, output_filname + "." +  output_ext
+            else:
+                input("\t\t[!!!] Wrong arguments. Enter to exit")
+                exit()
+    else: 
+        input("Wrong number of arguments. Enter to exit")
+        exit()
 
 
-    xml_string = ET.tostring(root, encoding="utf-8")
-    xml_dom = minidom.parseString(xml_string)
-    formatted_xml = xml_dom.toprettyxml(indent="\t")
+# Imports
 
-    with open(filename, "w") as file:
-        file.write(formatted_xml)
+def importJson(filename):
+    print("\n\t\tReading <-- ", filename)
+    try:
+        with open(filename, "r") as file:
+            data = json.load(file)
+            return data
+    except Exception as e:
+        input("\t\t[!!!] Error while reading JSON file. Enter to exit")
+        exit()
 
-    print(f"\n[{filename}] created.")
-except Exception:
-    print(f"[!!!] Error while creating {filename} [!!!]")
-    exit()
+def importYml(filename):
+    print("\n\t\tReading <-- ", filename)
+    try:
+        with open(filename, "r") as file:
+            data = yaml.safe_load(file)
+            return data
+    except Exception as e:
+        input("\t\t[!!!] Error while reading YML/YAML file. Enter to exit")
+        exit()
+        
+def importXml(filename):
+    print("\n\t\tReading <-- ", filename)
+    try:
+        with open(filename, "r") as file:
+            data = xmltodict.parse(file.read())
+            return data
+    except Exception as e:
+        input("\t\t[!!!] Error while reading XML file. Enter to exit")
+        exit()
 
+
+# Exports
+
+def exportJsonAsYml(data, filename):
+    print("\n\t\tExporting --> ", filename)
+    
+    try:
+        
+        with open(filename, "w") as file:
+            #json to yml
+            yaml.dump(data, file, indent=4)
+
+    except Exception as e:
+        print("\t\tGot error: ", e)
+        input("\t\t[!!!] Error while exporting JSON to YML/YAML file. Enter to exit")
+        exit()
+
+def exportJsonAsXml(data, filename):
+    print("\n\t\tExporting --> ", filename)
+    try:
+        with open(filename, "w") as file:
+            
+            #json to xml
+            xmltodict.unparse(data, file, pretty=True)
+
+            #json string to xml syntax and save to file
+            #file.write(xmltodict.unparse(data, pretty=True))
+
+    except Exception as e:
+        print("\t\tGot error: ", e)
+        input("\t\t[!!!] Error while exporting JSON to XML file. Enter to exit")
+        exit()
+
+
+
+def exportYmlAsJson(data, filename):
+    print("\n\t\tExporting --> ", filename)
+    try:
+        with open(filename, "w") as file:
+            #yml to json
+            json.dump(data, file, indent=4)
+    except Exception as e:
+        print("\t\tGot error: ", e)
+        input("\t\t[!!!] Error while exporting YML/YAML to JSON file. Enter to exit")
+        exit()
+
+def exportYmlAsXml(data, filename):
+    print("\n\t\tExporting --> ", filename)
+    try:
+        with open(filename, "w") as file:
+            #yml to xml
+            xmltodict.unparse(data, file, pretty=True)
+    except Exception as e:
+        print("\t\tGot error: ", e)
+        input("\t\t[!!!] Error while exporting YML/YAML to XML file. Enter to exit")
+        exit()
+
+
+
+def exportXmlAsJson(data, filename):
+    print("\n\t\tExporting --> ", filename)
+    try:
+        with open(filename, "w") as file:
+            #xml to json
+            json.dump(data, file, indent=4)
+    except Exception as e:
+        print("\t\tGot error: ", e)
+        input("\t\t[!!!] Error while exporting XML to JSON file. Enter to exit")
+        exit()
+
+def exportXmlAsYml(data, filename):
+    print("\n\t\tExporting --> ", filename)
+    try:
+        with open(filename, "w") as file:
+            #xml to yml
+            yaml.dump(data, file, indent=4)
+    except Exception as e:
+        print("\t\tGot error: ", e)
+        input("\t\t[!!!] Error while exporting XML to YML/YAML file. Enter to exit")
+        exit()
+
+def main():
+    arguments = checkArgs()
+
+    print("\n\n\tLogs:")
+    if arguments[0].split(".")[1] == "json":
+        if arguments[1].split(".")[1] == "yaml" or arguments[1].split(".")[1] == "yml":
+            data = importJson(arguments[0])
+            exportJsonAsYml(data, arguments[1])
+            
+        elif arguments[1].split(".")[1] == "xml":
+            data = importJson(arguments[0])
+            exportJsonAsXml(data, arguments[1])
+
+    elif arguments[0].split(".")[1] == "yaml" or arguments[0].split(".")[1] == "yml":
+        if arguments[1].split(".")[1] == "json":
+            data = importYml(arguments[0])
+            exportYmlAsJson(data, arguments[1])
+        elif arguments[1].split(".")[1] == "xml":
+            data = importYml(arguments[0])
+            exportYmlAsXml(data, arguments[1])
+
+    elif arguments[0].split(".")[1] == "xml":
+        if arguments[1].split(".")[1] == "json":
+            data = importXml(arguments[0])
+            exportXmlAsJson(data, arguments[1])
+        elif arguments[1].split(".")[1] == "yaml" or arguments[1].split(".")[1] == "yml":
+            
+            data = importXml(arguments[0])
+            
+            exportXmlAsYml(data, arguments[1])
+
+    else:
+        input("Unknown error. Enter to exit")
+        exit()
+    
+        
+
+
+
+
+if __name__ == "__main__":
+    main()
