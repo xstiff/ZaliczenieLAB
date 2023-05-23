@@ -10,6 +10,8 @@ required_packages = [
     "os",
     "subprocess",
     "importlib",
+    "pyyaml",
+    "xml",
 ]
 
 if __name__ == '__main__':
@@ -25,6 +27,7 @@ if __name__ == '__main__':
                 subprocess.check_call(['pip', 'install', package])
             except subprocess.CalledProcessError:
                 print(f'\nError while instaling package: {package}.')
+                exit()
     print('\nAll packages are installed.')
 
 
@@ -52,6 +55,7 @@ try:
         print(f"[{filename}]: \n {data}")
 except Exception:
     print(f"[!!!] Error while importing  {filename}.\nProbably file does not exist or is not in json syntax [!!!]")
+    exit()
 
 
 
@@ -66,3 +70,4 @@ try:
         print(f"\n[{filename}] created.")
 except Exception:
     print(f"[!!!] Error while creating {filename} [!!!]")
+    exit()
