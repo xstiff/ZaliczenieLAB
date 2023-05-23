@@ -95,3 +95,14 @@ except FileNotFoundError:
     print(f"[!!!] Error: {filename} does not exist [!!!]")
     exit()
 
+# Task 5
+
+filename = "yaml_output.yml"
+
+try:
+    with open(filename, "w") as file:
+        yaml.dump(data, file, default_flow_style=False, indent=4)
+        print(f"\n[{filename}] created.")
+except Exception:
+    print(f"[!!!] Error while creating {filename} [!!!]")
+    exit()

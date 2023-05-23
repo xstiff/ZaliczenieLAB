@@ -1,0 +1,20 @@
+-   cena: 1999.99
+    dostepnosc: true
+    kategoria: Elektronika
+    nazwa: Produkt 1
+-   cena: 59.99
+    dostepnosc: true
+    kahdfghtegoria: Odziez
+    nazwa: Produkt 2
+-   cena: 149.5
+    dostepnosc: false
+    kategoria: Dom i ogrod
+    nazwa: Produkt 3
+-   cena: 299.0
+    dostepnosc: true
+    kategoria: Sport i rekreacja
+    nazwa: Produkt 4
+-   cena: 39.9
+    dostepnosc: true
+    kategoria: Ksiazki
+    nazwa: Produkt 5
