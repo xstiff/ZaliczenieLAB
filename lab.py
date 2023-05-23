@@ -11,6 +11,7 @@ required_packages = [
     "subprocess",
     "importlib",
     "pyyaml",
+    "xml",
 ]
 
 if __name__ == '__main__':
@@ -76,7 +77,6 @@ except Exception:
 
 import yaml
 
-#how to install yaml
 
 filename = "yaml_file.yml"
 data = {}
@@ -106,3 +106,37 @@ try:
 except Exception:
     print(f"[!!!] Error while creating {filename} [!!!]")
     exit()
+
+
+
+# Task 6
+import xml.etree.ElementTree as ET
+
+filename = "xml_file.xml"
+data = {}
+
+try:
+    tree = ET.parse(filename)
+    root = tree.getroot()
+
+    for person in root.findall("person"):
+        person_data = {}
+        for element in person:
+            person_data[element.tag] = element.text
+        data[f"person{len(data)+1}"] = person_data
+
+    print(f"[{filename}]:")
+    for key, person_data in data.items():
+        print(key)
+        for element, value in person_data.items():
+            print(f"    {element}: {value}")
+except FileNotFoundError:
+    print(f"[!!!] Error: {filename} does not exist [!!!]")
+    exit()
+except ET.ParseError:
+    print(f"[!!!] Error while importing {filename}.")
+    print("Probably file does not exist or is not in valid XML syntax [!!!]")
+    exit()
+
+
+
