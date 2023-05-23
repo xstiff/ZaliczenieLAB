@@ -9,40 +9,60 @@ required_packages = [
     "json",
     "os",
     "subprocess",
-    
+    "importlib",
 ]
 
 if __name__ == '__main__':
+    import importlib
     import subprocess
 
+    
     for package in required_packages:
         try:
-            subprocess.check_call(['pip', 'install', package])
-        except subprocess.CalledProcessError:
-            print(f'Błąd podczas instalacji pakietu {package}.')
-    print('Wszystkie wymagane pakiety zostały zainstalowane.')
+            importlib.import_module(package)
+        except ImportError:
+            try:
+                subprocess.check_call(['pip', 'install', package])
+            except subprocess.CalledProcessError:
+                print(f'\nError while instaling package: {package}.')
+    print('\nAll packages are installed.')
 
 
 #  TASK 1
 import sys
 
 arguments = sys.argv[1:]
-print("Passed arguments:", arguments)
+if arguments:
+    print("\nPassed arguments:", arguments)
+else:
+    print("\nNo arguments were passed.\n")
+
 
 #Task 2
 import json
 import os
 
 filename = "json_file.json"
+data = {}
 
 try:
     with open(filename, "r") as file:
         data = json.load(file)
         data = json.dumps(data, indent=4)
         print(f"[{filename}]: \n {data}")
-except Exception as Error:
-    print("Error: ", Error)
-    os.system('pause')
+except Exception:
+    print(f"[!!!] Error while importing  {filename}.\nProbably file does not exist or is not in json syntax [!!!]")
 
 
-    
+
+#Task 3
+data = json.loads(data)
+
+filename = "json_output.json"
+
+try:
+    with open(filename, "w") as file:
+        json.dump(data, file, indent=4)
+        print(f"\n[{filename}] created.")
+except Exception:
+    print(f"[!!!] Error while creating {filename} [!!!]")
