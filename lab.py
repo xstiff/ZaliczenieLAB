@@ -11,6 +11,7 @@ required_packages = [
     "subprocess",
     "importlib",
     "pyyaml",
+    "xml",
 ]
 
 if __name__ == '__main__':
@@ -76,7 +77,6 @@ except Exception:
 
 import yaml
 
-#how to install yaml
 
 filename = "yaml_file.yml"
 data = {}
@@ -94,4 +94,3 @@ try:
 except FileNotFoundError:
     print(f"[!!!] Error: {filename} does not exist [!!!]")
     exit()
-
