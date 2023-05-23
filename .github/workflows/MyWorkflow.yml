@@ -2,7 +2,7 @@ name: MyWorkflow
 
 on:
   schedule:
-    - cron: "0 0 * * 0"  # Uruchamia raz w tygodniu o północy w niedzielę
+    - cron: "0 0 * * 0" # Uruchamia raz w tygodniu o północy w niedzielę
   push:
     branches:
       - master
@@ -10,25 +10,25 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest  # Ustawia domyślny serwer Windows
+    runs-on: windows-latest # Ustawia domyślny serwer Windows
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v2
+      - name: Checkout repo
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'  # Wybierz odpowiednią wersję Pythona
-        
-    - name: Install pyinstaller
-      run: pip install pyinstaller
-      
-    - name: Build EXE
-      run: pyinstaller --onefile lab.py 
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x" # Wybierz odpowiednią wersję Pythona
 
-    - name: Upload EXE
-      uses: actions/upload-artifact@v3
-      with:
-        name: lab.exe 
-        path: dist/lab.exe 
+      - name: Install pyinstaller
+        run: pip install pyinstaller
+
+      - name: Build EXE
+        run: pyinstaller --onefile lab.py
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v3
+        with:
+          name: lab.exe
+          path: compiledExe/lab.exe
