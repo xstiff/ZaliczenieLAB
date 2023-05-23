@@ -10,6 +10,7 @@ required_packages = [
     "os",
     "subprocess",
     "importlib",
+    "pyyaml",
 ]
 
 if __name__ == '__main__':
@@ -25,6 +26,7 @@ if __name__ == '__main__':
                 subprocess.check_call(['pip', 'install', package])
             except subprocess.CalledProcessError:
                 print(f'\nError while instaling package: {package}.')
+                exit()
     print('\nAll packages are installed.')
 
 
@@ -52,6 +54,7 @@ try:
         print(f"[{filename}]: \n {data}")
 except Exception:
     print(f"[!!!] Error while importing  {filename}.\nProbably file does not exist or is not in json syntax [!!!]")
+    exit()
 
 
 
@@ -66,3 +69,29 @@ try:
         print(f"\n[{filename}] created.")
 except Exception:
     print(f"[!!!] Error while creating {filename} [!!!]")
+    exit()
+
+
+#Task 4
+
+import yaml
+
+#how to install yaml
+
+filename = "yaml_file.yml"
+data = {}
+
+try:
+    with open(filename, "r") as file:
+        try:
+            data = yaml.safe_load(file)
+            print(f"[{filename}]:")
+            print(yaml.dump(data, indent=4))
+        except yaml.YAMLError:
+            print(f"[!!!] Error while importing {filename}.")
+            print("Probably file does not exist or is not in YAML syntax [!!!]")
+            exit()
+except FileNotFoundError:
+    print(f"[!!!] Error: {filename} does not exist [!!!]")
+    exit()
+
