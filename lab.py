@@ -9,16 +9,23 @@ required_packages = [
     "json",
     "os",
     "subprocess",
-    
+    "importlib",
+    "pyyaml",
+    "xml",
 ]
 
 if __name__ == '__main__':
+    import importlib
     import subprocess
 
+    
     for package in required_packages:
         try:
-            subprocess.check_call(['pip', 'install', package])
-        except subprocess.CalledProcessError:
-            print(f'Błąd podczas instalacji pakietu {package}.')
-    print('Wszystkie wymagane pakiety zostały zainstalowane.')
-
+            importlib.import_module(package)
+        except ImportError:
+            try:
+                subprocess.check_call(['pip', 'install', package])
+            except subprocess.CalledProcessError:
+                print(f'\nError while instaling package: {package}.')
+                exit()
+    print('\nAll packages are installed.')
