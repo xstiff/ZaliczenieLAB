@@ -138,5 +138,32 @@ except ET.ParseError:
     print("Probably file does not exist or is not in valid XML syntax [!!!]")
     exit()
 
+# Task 7
+import xml.dom.minidom as minidom
 
+filename = "xml_output.xml"
+
+try:
+    root = ET.Element("root")
+
+    for person_key, person_data in data.items():
+        person = ET.SubElement(root, "person")
+        for element, value in person_data.items():
+            element_tag = ET.SubElement(person, element)
+            element_tag.text = value
+
+    tree = ET.ElementTree(root)
+
+
+    xml_string = ET.tostring(root, encoding="utf-8")
+    xml_dom = minidom.parseString(xml_string)
+    formatted_xml = xml_dom.toprettyxml(indent="\t")
+
+    with open(filename, "w") as file:
+        file.write(formatted_xml)
+
+    print(f"\n[{filename}] created.")
+except Exception:
+    print(f"[!!!] Error while creating {filename} [!!!]")
+    exit()
 
